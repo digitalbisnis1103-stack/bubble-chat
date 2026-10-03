@@ -1,0 +1,795 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#FF1493">
+<title>Chat untuk Eca</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --pink: #FF4F9A;
+  --hot: #FF1493;
+  --deep: #8A174D;
+  --green: #FFD6E8;
+  --light: #FFF0F7;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--deep);
+}
+
+body {
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  padding: 12px 8px;
+  background: linear-gradient(135deg, #FFB6D9, #FF4F9A, #FF1493);
+  overflow-x: hidden;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
+
+.phone {
+  width: min(100%, 370px);
+  height: min(780px, calc(100dvh - 24px));
+  min-height: 540px;
+  background: white;
+  border: 5px solid white;
+  border-radius: 30px;
+  box-shadow: 0 18px 55px #A600503D;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 2;
+}
+
+.status {
+  height: 25px;
+  flex: none;
+  background: var(--pink);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  font-size: 10px;
+  font-weight: 700;
+  color: white;
+}
+
+.wa-head {
+  height: 61px;
+  flex: none;
+  background: var(--pink);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 11px;
+  border-bottom: 1px solid #F58DBA;
+}
+
+.back-arrow {
+  font-size: 24px;
+  color: white;
+}
+
+.avatar {
+  height: 38px;
+  width: 38px;
+  border-radius: 50%;
+  background: white;
+  border: 2px solid white;
+  overflow: hidden;
+  flex: none;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.person {
+  flex: 1;
+  min-width: 0;
+}
+
+.person strong {
+  display: block;
+  font-size: 14px;
+  color: white;
+}
+
+.person small {
+  display: block;
+  font-size: 10px;
+  color: #FFF0F7;
+  margin-top: 3px;
+}
+
+.head-actions {
+  font-size: 18px;
+  color: white;
+}
+
+.progress {
+  height: 3px;
+  background: #FFD6E8;
+  flex: none;
+}
+
+.progress span {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: #FF1493;
+  transition: width .25s;
+}
+
+.chat-area {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 14px 10px 18px;
+  background:
+    radial-gradient(#F5B8D0 .65px, transparent .65px),
+    linear-gradient(135deg, #FFF8FC, #FFE8F2);
+  background-size: 17px 17px, 100% 100%;
+  scroll-behavior: smooth;
+}
+
+.date-pill {
+  width: max-content;
+  margin: 0 auto 14px;
+  padding: 5px 11px;
+  border-radius: 7px;
+  background: #FFE1ED;
+  color: #A64C72;
+  font-size: 10px;
+}
+
+.bubble {
+  position: relative;
+  width: fit-content;
+  max-width: 94%;
+  padding: 10px 11px 19px;
+  margin: 0 0 9px;
+  font-size: 13px;
+  line-height: 1.55;
+  box-shadow: 0 1px 3px #815D5D14;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+  animation: pop .22s ease-out both;
+}
+
+.bubble.in {
+  background: white;
+  border-radius: 3px 13px 13px 13px;
+  margin-right: auto;
+  color: var(--deep);
+}
+
+.bubble.out {
+  background: var(--green);
+  border-radius: 13px 3px 13px 13px;
+  margin-left: auto;
+  color: #8A174D;
+}
+
+.bubble .time {
+  position: absolute;
+  right: 7px;
+  bottom: 4px;
+  font-size: 9px;
+  color: #9B8B8B;
+}
+
+.checks {
+  color: #168AC4;
+}
+
+.typing {
+  display: none;
+  width: 48px;
+  padding: 11px 13px;
+  background: white;
+  border-radius: 4px 14px 14px 14px;
+  margin-bottom: 10px;
+  gap: 4px;
+}
+
+.typing.show {
+  display: flex;
+}
+
+.typing i {
+  height: 5px;
+  width: 5px;
+  border-radius: 50%;
+  background: #C6A4AE;
+  animation: blink .8s infinite alternate;
+}
+
+.typing i:nth-child(2) {
+  animation-delay: .2s;
+}
+
+.typing i:nth-child(3) {
+  animation-delay: .4s;
+}
+
+.composer {
+  background: var(--pink);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 9px;
+  flex: none;
+}
+
+.fake-input {
+  height: 39px;
+  flex: 1;
+  min-width: 0;
+  border-radius: 22px;
+  background: white;
+  display: flex;
+  align-items: center;
+  padding: 0 13px;
+  color: #B79AA2;
+  font-size: 12px;
+}
+
+.plus {
+  font-size: 22px;
+  color: white;
+}
+
+.send {
+  height: 37px;
+  width: 37px;
+  flex: none;
+  border: 0;
+  border-radius: 50%;
+  background: var(--hot);
+  color: white;
+  font-size: 17px;
+}
+
+.nav {
+  display: flex;
+  gap: 8px;
+  background: white;
+  padding: 9px;
+  flex: none;
+}
+
+.nav button {
+  border: 1px solid #FF8FBC;
+  background: #FFF0F7;
+  color: #C2185B;
+  border-radius: 11px;
+  padding: 9px 6px;
+  font-size: 11px;
+  font-weight: 700;
+  flex: 1;
+}
+
+.nav .primary {
+  background: var(--hot);
+  color: white;
+  border-color: var(--hot);
+}
+
+.nav button:disabled {
+  opacity: .6;
+  cursor: wait;
+}
+
+.choice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 9px;
+}
+
+.choice button {
+  border: 1px solid #FF8FBC;
+  border-radius: 16px;
+  padding: 8px 13px;
+  background: #FFF0F7;
+  color: #C2185B;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.choice button:first-child {
+  background: var(--hot);
+  color: white;
+}
+
+.choice button:disabled {
+  opacity: .65;
+}
+
+.answer-note {
+  display: none;
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.small {
+  font-size: 10px;
+  color: #A47B87;
+  line-height: 1.5;
+}
+
+/* GALERI FOTO 2 X 2 */
+
+.photo-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 12px;
+  width: 100%;
+}
+
+.photo {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  min-width: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid white;
+  background: #FFE5F0;
+  box-shadow: 0 1px 4px #7E586022;
+}
+
+.photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.floating {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.heart {
+  position: absolute;
+  bottom: -25px;
+  color: #FF1493;
+  opacity: .75;
+  animation: rise linear forwards;
+}
+
+.heart:nth-child(3n) {
+  color: white;
+}
+
+@keyframes rise {
+  to {
+    transform: translateY(-110vh) rotate(35deg);
+    opacity: 0;
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes blink {
+  to {
+    opacity: .25;
+    transform: translateY(-3px);
+  }
+}
+
+@media (max-height: 650px) {
+  .phone {
+    min-height: 0;
+    height: calc(100dvh - 18px);
+  }
+
+  .bubble {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 380px) {
+  body {
+    padding: 5px;
+  }
+
+  .phone {
+    width: 100%;
+    border-width: 3px;
+    border-radius: 24px;
+  }
+
+  .bubble {
+    max-width: 96%;
+    font-size: 12px;
+  }
+
+  .nav button {
+    font-size: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="floating" id="floating" aria-hidden="true"></div>
+
+<main class="phone">
+
+  <div class="status">
+    <span>9:41</span>
+    <span>● ● ▰</span>
+  </div>
+
+  <header class="wa-head">
+    <span class="back-arrow">‹</span>
+
+    <div class="avatar">
+      <img src="icon1.jpg" alt="Foto Eca">
+    </div>
+
+    <div class="person">
+      <strong>Eca</strong>
+      <small>online</small>
+    </div>
+
+    <div class="head-actions">⌕ ⋮</div>
+  </header>
+
+  <div class="progress">
+    <span id="progress"></span>
+  </div>
+
+  <section class="chat-area" id="chatArea" aria-live="polite">
+    <div class="date-pill">Hari ini</div>
+    <div id="messages"></div>
+
+    <div class="typing" id="typing">
+      <i></i><i></i><i></i>
+    </div>
+  </section>
+
+  <audio id="bgMusic" loop preload="auto">
+    <source src="musik.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="composer">
+    <span class="plus">＋</span>
+    <div class="fake-input" id="fakeInput">Pesan</div>
+    <button class="send" id="sendBtn" aria-label="Lanjutkan">➤</button>
+  </div>
+
+  <nav class="nav">
+    <button id="backBtn">Sebelumnya</button>
+    <button class="primary" id="nextBtn">Baca pesan</button>
+  </nav>
+
+</main>
+
+<script>
+const slides = [
+  [
+    {type:'out', text:'Hai, Eca'},
+    {type:'in', text:'Haii, kenapaa?'},
+    {type:'out', text:'Sebenernya aku bingung mau mulai dari mana...'},
+    {type:'out', text:'Tapi kali ini aku pengen nyampein sesuatu yang udah cukup lama aku simpen sendiri.'}
+  ],
+
+  [
+    {type:'out', text:'Awalnya kita cuma ngobrol biasa.'},
+    {type:'in', text:'Iyaa, awalnya ngobrol biasa aja kan wkwk'},
+    {type:'out', text:'Nggak ada yang aku kira bakal jadi sejauh ini.'},
+    {type:'out', text:'Tapi makin sering ngobrol sama kamu, aku malah makin nyaman.'}
+  ],
+
+  [
+    {type:'out', text:'Entah kenapa, ada aja hal dari kamu yang bikin aku tertarik.'},
+    {type:'out', text:'Cara kamu ngobrol, cara kamu cerita, bahkan hal-hal kecil yang mungkin menurut kamu biasa aja.'},
+    {type:'in', text:'Masa sih? wkwk'},
+    {type:'out', text:'Tapi buat aku, itu beda.'}
+  ],
+
+  [
+    {type:'out', text:'Sampai akhirnya aku sadar...'},
+    {type:'out', text:'Kayaknya ini udah bukan sekadar rasa nyaman biasa.'},
+    {type:'out', text:'Aku mulai nungguin chat kamu. Mulai seneng kalau bisa ngobrol sama kamu.'},
+    {type:'out', text:'Dan tanpa sadar... aku mulai suka sama kamu.'}
+  ],
+
+  [
+    {type:'out', text:'Jadi kali ini aku mau jujur.'},
+    {type:'out', text:'Aku suka sama kamu, Eca.'},
+    {type:'out', text:'Aku nggak tahu kamu bakal ngerasa hal yang sama atau enggak.'},
+    {type:'out', text:'Tapi setidaknya sekarang kamu udah tahu apa yang sebenarnya aku rasain.'}
+  ],
+
+  [
+    {type:'out', text:'Tapi ada satu hal yang pengen aku tanyain...'},
+    {type:'out', text:'Kalau kamu juga ngerasa nyaman sama aku, mau ga kamu jadi pacarku?'},
+    {type:'choice'}
+  ],
+
+  [
+    {type:'out', text:'Satu hal lagi sebelum selesai...'},
+    {type:'out', text:'Ada beberapa foto yang pengen aku simpan di pesan kecil ini.'},
+    {type:'photos'}
+  ],
+
+  [
+    {type:'out', text:'Aku nggak tahu jawaban apa yang bakal aku dapet setelah kamu baca semuanya.'},
+    {type:'out', text:'Tapi apa pun jawabannya nanti...'},
+    {type:'out', text:'Aku tetap seneng karena akhirnya aku bisa bilang langsung:'},
+    {type:'out', text:'— dari aku, yang pengen kenal kamu lebih jauh.'},
+    {type:'out', text:'Terima kasih udah baca sampai akhir, Eca.'}
+  ]
+];
+
+let current = 0;
+let musicStarted = false;
+let isAdvancing = false;
+
+const messages = document.getElementById('messages');
+const area = document.getElementById('chatArea');
+const typing = document.getElementById('typing');
+const bgMusic = document.getElementById('bgMusic');
+const nextBtn = document.getElementById('nextBtn');
+const backBtn = document.getElementById('backBtn');
+
+function startMusic() {
+  if (musicStarted) return;
+
+  bgMusic.volume = 0.45;
+
+  const playPromise = bgMusic.play();
+
+  if (playPromise && typeof playPromise.then === 'function') {
+    playPromise.then(() => {
+      musicStarted = true;
+    }).catch(() => {
+      // Musik akan dicoba lagi saat pengguna berinteraksi.
+    });
+  }
+}
+
+document.addEventListener('pointerdown', startMusic, {once:true});
+document.addEventListener('keydown', startMusic, {once:true});
+
+function makeBubble(item) {
+  const bubble = document.createElement('div');
+
+  bubble.className =
+    'bubble ' + (item.type === 'in' ? 'in' : 'out');
+
+  if (item.type === 'choice') {
+    const prompt = document.createElement('div');
+    prompt.textContent = 'Kalau kamu mau jawab sekarang, pilih aja ya.';
+    bubble.appendChild(prompt);
+
+    const choices = document.createElement('div');
+    choices.className = 'choice';
+
+    const yes = document.createElement('button');
+    yes.type = 'button';
+    yes.textContent = 'Mau';
+    yes.addEventListener('click', () => answer(true, choices, note));
+
+    const think = document.createElement('button');
+    think.type = 'button';
+    think.textContent = 'Mikir dulu';
+    think.addEventListener('click', () => answer(false, choices, note));
+
+    choices.append(yes, think);
+
+    const note = document.createElement('div');
+    note.className = 'answer-note';
+
+    bubble.append(choices, note);
+    return bubble;
+  }
+
+  if (item.type === 'photos') {
+    const heading = document.createElement('div');
+    heading.style.fontWeight = '700';
+    heading.style.marginBottom = '4px';
+    heading.textContent = 'Little moments';
+
+    const subtitle = document.createElement('div');
+    subtitle.className = 'small';
+    subtitle.textContent =
+      '';
+
+    const grid = document.createElement('div');
+    grid.className = 'photo-grid';
+
+    for (let i = 1; i <= 4; i++) {
+      const box = document.createElement('div');
+      box.className = 'photo';
+
+      const img = document.createElement('img');
+      img.src = `foto${i}.jpg`;
+      img.alt = `Foto kenangan ${i}`;
+      img.loading = 'lazy';
+
+      box.appendChild(img);
+      grid.appendChild(box);
+    }
+
+    bubble.append(heading, subtitle, grid);
+    return bubble;
+  }
+
+  bubble.textContent = item.text;
+
+  const time = document.createElement('span');
+  time.className = 'time';
+  time.innerHTML =
+    '9:41' +
+    (item.type === 'out'
+      ? ' <span class="checks">✓✓</span>'
+      : '');
+
+  bubble.appendChild(time);
+
+  return bubble;
+}
+
+function render() {
+  messages.innerHTML = '';
+
+  slides[current].forEach((item, index) => {
+    const bubble = makeBubble(item);
+    bubble.style.animationDelay = (index * 0.08) + 's';
+    messages.appendChild(bubble);
+  });
+
+  document.getElementById('progress').style.width =
+    ((current + 1) / slides.length * 100) + '%';
+
+  backBtn.style.visibility =
+    current === 0 ? 'hidden' : 'visible';
+
+  nextBtn.textContent =
+    current === slides.length - 1
+      ? 'Mulai lagi'
+      : 'Lanjut chat';
+
+  document.getElementById('fakeInput').textContent =
+    current === slides.length - 1
+      ? 'Pesan kecil buat Eca'
+      : 'Pesan';
+
+  area.scrollTop = 0;
+}
+
+function advance() {
+  if (isAdvancing) return;
+
+  startMusic();
+
+  if (current === slides.length - 1) {
+    current = 0;
+    render();
+    return;
+  }
+
+  isAdvancing = true;
+  typing.classList.add('show');
+  nextBtn.disabled = true;
+  document.getElementById('sendBtn').disabled = true;
+
+  setTimeout(() => {
+    typing.classList.remove('show');
+    current++;
+    render();
+
+    nextBtn.disabled = false;
+    document.getElementById('sendBtn').disabled = false;
+    isAdvancing = false;
+  }, 380);
+}
+
+function back() {
+  if (isAdvancing) return;
+
+  if (current > 0) {
+    current--;
+    render();
+  }
+}
+
+function answer(yes, choices, note) {
+  note.style.display = 'block';
+
+  note.textContent = yes
+    ? 'Makasih udah jawab. Aku seneng banget bisa jujur sama kamu. Semoga kita bisa jalanin ini sama-sama.'
+    : 'Nggak apa-apa, Eca. Kamu boleh pikirin dulu, nggak perlu buru-buru jawab. Yang penting kamu nyaman.';
+
+  choices.querySelectorAll('button').forEach(button => {
+    button.disabled = true;
+  });
+}
+
+nextBtn.addEventListener('click', advance);
+document.getElementById('sendBtn').addEventListener('click', advance);
+backBtn.addEventListener('click', back);
+
+document.addEventListener('keydown', event => {
+  if (event.key === 'Enter') {
+    advance();
+  }
+});
+
+function createHeart() {
+  const heart = document.createElement('span');
+
+  heart.className = 'heart';
+  heart.textContent = Math.random() > 0.5 ? '♥' : '♡';
+
+  heart.style.left = Math.random() * 100 + '%';
+  heart.style.fontSize = (10 + Math.random() * 13) + 'px';
+  heart.style.animationDuration = (5 + Math.random() * 5) + 's';
+
+  document.getElementById('floating').appendChild(heart);
+
+  setTimeout(() => heart.remove(), 11000);
+}
+
+setInterval(createHeart, 500);
+
+for (let i = 0; i < 12; i++) {
+  setTimeout(createHeart, i * 150);
+}
+
+render();
+</script>
+
+</body>
+</html>
+
